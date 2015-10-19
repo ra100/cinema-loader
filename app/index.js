@@ -8,8 +8,6 @@ var pusher = new PushBullet(config.pushbulletApiKey);
 // refresh interval
 var interval;
 
-// Utility function that downloads a URL and invokes
-// callback with the data.
 /**
  * Utility function that downloads a URL and invokes callback with the data.
  * @param  {string}   url      URL location
