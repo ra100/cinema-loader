@@ -1,8 +1,8 @@
-var cheerio = require("cheerio");
-var http = require("http");
-var PushBullet = require('pushbullet');
-var config = require('./config.json');
-var pusher = new PushBullet(config.pushbulletApiKey);
+var cheerio = require("cheerio"),
+  http = require("http"),
+  PushBullet = require('pushbullet'),
+  config = require('./config.json'),
+  pusher = new PushBullet(config.pushbulletApiKey);
 
 var interval;
 
