@@ -1,4 +1,4 @@
-# CinemaCity checker
+# CinemaCity loader
 
 Thanks to this, I don't need to reload cinema schedule while waiting for
 premiere. When new schedule emerges, sends PushBullet notification.
