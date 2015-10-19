@@ -3,5 +3,6 @@
   "url": "http://cinemacity.cz/scheduleInfo?locationId=LOCATION&date=DD/MM/YYYY&venueTypeId=2&hideSite=0&newwin=1",
   "pushbulletApiKey": "NONE",
   "cinemaLink": "http://cinemacity.cz/",
-  "refreshInterval": "60"
+  "refreshInterval": "60",
+  "pingInterval": "3600"
 }

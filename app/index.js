@@ -31,7 +31,6 @@ function checkSchedule() {
         sendNotification();
         clearInterval(interval);
       }
-      console.log('No new schedule.');
     }
   });
 }
@@ -43,9 +42,18 @@ function sendNotification() {
   });
 }
 
+function sendPing() {
+  pusher.note('', "Cinema loder", "Just sain' I'm still running.", function (error, response) {
+    console.log('Still running.');
+  });
+}
+
 function run() {
   console.log('Checking started.');
   interval = setInterval(checkSchedule, 60 * 1000);
+  if (config.pingInterval > 0) {
+    var pingInterval = setInterval(sendPing, config.pingInterval * 1000);
+  }
   checkSchedule();
 }
 
