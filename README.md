@@ -1,4 +1,4 @@
-# CinemaCity loader
+# Cinema loader
 
 Thanks to this, I don't need to reload cinema schedule while waiting for
 premiere. When new schedule emerges, sends PushBullet notification.
@@ -8,7 +8,7 @@ premiere. When new schedule emerges, sends PushBullet notification.
 Get the code.
 
 ```shell
-git clone https://github.com/ra100/cinemacity-loader
+git clone https://github.com/ra100/cinema-loader
 cd cinemacity-loader
 npm install
 ```

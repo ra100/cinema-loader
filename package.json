@@ -1,5 +1,5 @@
 {
-  "name": "cinemacity-loader",
+  "name": "cinema-loader",
   "version": "0.1.0",
   "description": "reloads imax schedule times",
   "main": "app/index.js",
@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com:ra100/cinemacity-loader.git"
+    "url": "https://github.com:ra100/cinema-loader.git"
   },
   "scripts": {
     "app": "node app/index.js",
