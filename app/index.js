@@ -1,7 +1,7 @@
 var cheerio = require("cheerio"),
   http = require("http"),
-  PushBullet = require('pushbullet'),
-  config = require('./config.json');
+  PushBullet = require("pushbullet"),
+  config = require("./config.json");
 
 // pushbullet object
 var pusher = new PushBullet(config.pushbulletApiKey);
@@ -17,7 +17,7 @@ var interval;
 function download(url, callback) {
   http.get(url, function (res) {
     var data = "";
-    res.on('data', function (chunk) {
+    res.on("data", function (chunk) {
       data += chunk;
     });
     res.on("end", function () {
@@ -36,11 +36,16 @@ function checkSchedule() {
   download(config.url, function (data) {
     if (data) {
       var $ = cheerio.load(data);
-      var size = $('tbody tr td').length;
+      var size = $("tbody tr td").length;
       if (size > 1) {
         sendNotification();
         clearInterval(interval);
       }
+    } else {
+      pusher.note("", "Cinema loader - Error!",
+        "something went wrong, please chech me out",
+        function (error, response) {});
+        console.log("Error occured");
     }
   });
   return;
@@ -51,8 +56,8 @@ function checkSchedule() {
  * @return null
  */
 function sendNotification() {
-  pusher.link('', "New schedule", config.cinemaLink, function (error, response) {
-    console.log('New program. Push sent.');
+  pusher.link("", "Cinema loader - New schedule!", config.cinemaLink, function (error, response) {
+    console.log("New program. Push sent.");
     process.exit(0);
   });
   return;
@@ -63,8 +68,8 @@ function sendNotification() {
  * @return null
  */
 function sendPing() {
-  pusher.note('', "Cinema loder", "Just sain' I'm still running.", function (error, response) {
-    console.log('Still running.');
+  pusher.note("", "Cinema loder", "Just sain' I'm still running.", function (error, response) {
+    console.log("Still running.");
   });
   return;
 }
@@ -74,7 +79,7 @@ function sendPing() {
  * @return null
  */
 function run() {
-  console.log('Checking started.');
+  console.log("Checking started.");
   interval = setInterval(checkSchedule, 60 * 1000);
   if (config.pingInterval > 0) {
     var pingInterval = setInterval(sendPing, config.pingInterval * 1000);
