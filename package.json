@@ -1,0 +1,22 @@
+{
+  "name": "cinemacity-loader",
+  "version": "0.0.1",
+  "description": "reloads imax schedule times",
+  "main": "app/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com:ra100/cinemacity-loader.git"
+  },
+  "scripts": {
+    "test": "exit 1"
+  },
+  "author": "ra100",
+  "license": "GPLv2",
+  "devDependencies": {
+    "grunt": "~0.4.5"
+  },
+  "dependencies": {
+    "http": "latest",
+    "cheerio": "latest"
+  }
+}
