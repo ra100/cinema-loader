@@ -4,7 +4,7 @@ var cheerio = require("cheerio"),
   config = require("./config.json");
 
 // pushbullet object
-var pusher = new PushBullet(config.pushbulletApiKey);
+var pusher = new PushBullet(config[0].pushbulletApiKey);
 // refresh interval
 var interval;
 
@@ -33,21 +33,23 @@ function download(url, callback) {
  * @return null
  */
 function checkSchedule() {
-  download(config.url, function (data) {
-    if (data) {
-      var $ = cheerio.load(data);
-      var size = $("tbody tr td").length;
-      if (size > 1) {
-        sendNotification();
-        clearInterval(interval);
+  for (var i = 0; i < config.length; i++) {
+    download(config[i].url, function (data) {
+      if (data) {
+        var $ = cheerio.load(data);
+        var size = $("tbody tr td").length;
+        if (size > 1) {
+          sendNotification(config[i]);
+          clearInterval(interval);
+        }
+      } else {
+        pusher.note("", "Cinema loader - Error!",
+          "something went wrong, please chech me out",
+          function (error, response) {});
+          console.log("Error occured");
       }
-    } else {
-      pusher.note("", "Cinema loader - Error!",
-        "something went wrong, please chech me out",
-        function (error, response) {});
-        console.log("Error occured");
-    }
-  });
+    });
+  }
   return;
 }
 
@@ -55,7 +57,7 @@ function checkSchedule() {
  * Pushes link with info, that new schedule is available.
  * @return null
  */
-function sendNotification() {
+function sendNotification(config) {
   pusher.link("", "Cinema loader - New schedule!", config.cinemaLink, function (error, response) {
     console.log("New program. Push sent.");
     process.exit(0);
@@ -81,8 +83,8 @@ function sendPing() {
 function run() {
   console.log("Checking started.");
   interval = setInterval(checkSchedule, 60 * 1000);
-  if (config.pingInterval > 0) {
-    var pingInterval = setInterval(sendPing, config.pingInterval * 1000);
+  if (config[0].pingInterval > 0) {
+    var pingInterval = setInterval(sendPing, config[0].pingInterval * 1000);
   }
   checkSchedule();
   return;

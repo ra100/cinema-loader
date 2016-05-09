@@ -23,13 +23,20 @@ nano app/config.json
 Config structure
 
 ```json
-{
+[{
   "url": "http://cinemacity.cz/scheduleInfo?locationId=LOCATION&date=DD/MM/YYYY&venueTypeId=2&hideSite=0&newwin=1",
   "pushbulletApiKey": "NONE",
   "cinemaLink": "http://cinemacity.cz/",
   "refreshInterval": "60",
   "pingInterval": "3600"
-}
+},
+{
+  "url": "http://cinestar.cz/cz/?option=com_csevents&view=eventsforday&date=YYYY-MM-DD&cinema=11&titleId=0&format=raw&tpl=program",
+  "pushbulletApiKey": "NONE",
+  "cinemaLink": "http://cinestar.cz/",
+  "refreshInterval": "60",
+  "pingInterval": "3600"
+}]
 ```
 
 *   ```url``` - url where is the schelude info. Set ```LOCATION```
