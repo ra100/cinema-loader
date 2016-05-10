@@ -34,12 +34,13 @@ function download(url, callback) {
  */
 function checkSchedule() {
   for (var i = 0; i < config.length; i++) {
-    download(config[i].url, function (data) {
+    var c = config[i];
+    download(c.url, function (data) {
       if (data) {
         var $ = cheerio.load(data);
         var size = $("tbody tr td").length;
         if (size > 1) {
-          sendNotification(config[i]);
+          sendNotification(c.cinemaLink);
           clearInterval(interval);
         }
       } else {
@@ -57,8 +58,8 @@ function checkSchedule() {
  * Pushes link with info, that new schedule is available.
  * @return null
  */
-function sendNotification(config) {
-  pusher.link("", "Cinema loader - New schedule!", config.cinemaLink, function (error, response) {
+function sendNotification(link) {
+  pusher.link("", "Cinema loader - New schedule!", link, function (error, response) {
     console.log("New program. Push sent.");
     process.exit(0);
   });
