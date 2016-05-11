@@ -6,7 +6,9 @@ var cheerio = require("cheerio"),
 // pushbullet object
 var pusher = new PushBullet(config[0].pushbulletApiKey);
 // refresh interval
-var interval;
+var intervals = {
+  length: 0
+};
 
 /**
  * Utility function that downloads a URL and invokes callback with the data.
@@ -32,25 +34,21 @@ function download(url, callback) {
  * Download url and check content.
  * @return null
  */
-function checkSchedule() {
-  for (var i = 0; i < config.length; i++) {
-    var c = config[i];
-    download(c.url, function (data) {
-      if (data) {
-        var $ = cheerio.load(data);
-        var size = $("tbody tr td").length;
-        if (size > 1) {
-          sendNotification(c.cinemaLink);
-          clearInterval(interval);
-        }
-      } else {
-        pusher.note("", "Cinema loader - Error!",
-          "something went wrong, please chech me out",
-          function (error, response) {});
-          console.log("Error occured");
+function checkSchedule(c) {
+  download(c.url, function (data) {
+    if (data) {
+      var $ = cheerio.load(data);
+      var size = $("tr.even").length;
+      console.log(size);
+      if (size >= 1) {
+        sendNotification(c);
+        clearInterval(intervals[c.i]);
       }
-    });
-  }
+    } else {
+      pusher.note("", "Cinema loader - Error!", "something went wrong, please chech me out", function (error, response) {});
+      console.log("Error occured");
+    }
+  });
   return;
 }
 
@@ -58,10 +56,15 @@ function checkSchedule() {
  * Pushes link with info, that new schedule is available.
  * @return null
  */
-function sendNotification(link) {
-  pusher.link("", "Cinema loader - New schedule!", link, function (error, response) {
+function sendNotification(c) {
+  pusher.link("", c.text + " - New schedule!", c.cinemaLink, function (error, response) {
+    clearInterval(intervals[c.i]);
+    delete intervals[c.i];
+    intervals.length--;
     console.log("New program. Push sent.");
-    process.exit(0);
+    if (intervals.length <= 0) {
+      process.exit(0);
+    }
   });
   return;
 }
@@ -83,11 +86,17 @@ function sendPing() {
  */
 function run() {
   console.log("Checking started.");
-  interval = setInterval(checkSchedule, 60 * 1000);
-  if (config[0].pingInterval > 0) {
-    var pingInterval = setInterval(sendPing, config[0].pingInterval * 1000);
-  }
-  checkSchedule();
+  config.map(function(c, i) {
+    c.i = i;
+    intervals[c.i] = setInterval(function () {
+      checkSchedule(c);
+    }, c.refreshInterval * 1000);
+    intervals.length++;
+    checkSchedule(c);
+    if (c.pingInterval) {
+      setInterval(sendPing, c.pingInterval * 1000);
+    }
+  })
   return;
 }
 
