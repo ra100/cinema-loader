@@ -39,7 +39,6 @@ function checkSchedule(c) {
     if (data) {
       var $ = cheerio.load(data);
       var size = $("tr.even").length;
-      console.log(size);
       if (size >= 1) {
         sendNotification(c);
         clearInterval(intervals[c.i]);
