@@ -1,6 +1,7 @@
-const cheerio = require('cheerio')
 const https = require('https')
+const cheerio = require('cheerio')
 const PushBullet = require('pushbullet')
+
 const config = require('./config.json')
 
 // pushbullet object
@@ -16,46 +17,47 @@ const intervals = {
  * @param  {Function} callback executes after contents are loaded
  * @return {null}
  */
-const download = (url, callback) => {
-  https
-    .get(url, res => {
-      let data = ''
-      res.on('data', chunk => {
-        data += chunk
+const download = url =>
+  new Promise((resolve, reject) => {
+    https
+      .get(url, res => {
+        let data = ''
+        res.on('data', chunk => {
+          data += chunk
+        })
+        res.on('end', () => {
+          resolve(data)
+        })
       })
-      res.on('end', () => {
-        callback(data)
+      .on('error', () => {
+        reject('Download error')
       })
-    })
-    .on('error', () => {
-      callback(null)
-    })
-}
+  })
 
 /**
  * Download url and check content.
  * @return null
  */
 const checkSchedule = c => {
-  download(c.url, data => {
-    if (!data) {
-      console.error('Error occured')
+  download(c.url)
+    .then(data => {
+      var $ = cheerio.load(data)
+      var size = $('tr.even').length
+      if (size >= 1) {
+        sendNotification(c)
+        clearInterval(intervals[c.i])
+      }
+      return
+    })
+    .catch(error => {
+      console.error('Error occured', error)
       pusher.note(
         '',
         'Cinema loader - Error!',
         'something went wrong, please chech me out',
         (error, response) => {}
       )
-      return
-    }
-    var $ = cheerio.load(data)
-    var size = $('tr.even').length
-    if (size >= 1) {
-      sendNotification(c)
-      clearInterval(intervals[c.i])
-    }
-    return
-  })
+    })
 }
 
 /**
