@@ -6,10 +6,7 @@ const config = require('./config.json')
 
 // pushbullet object
 const pusher = new PushBullet(config[0].pushbulletApiKey)
-// refresh interval
-const intervals = {
-  length: 0,
-}
+let running = 0
 
 /**
  * Utility function that downloads a URL and invokes callback with the data.
@@ -38,19 +35,19 @@ const download = url =>
  * Download url and check content.
  * @return null
  */
-const checkSchedule = c => {
+const checkSchedule = c => () => {
   download(c.url)
     .then(data => {
       var $ = cheerio.load(data)
       var size = $('tr.even').length
       if (size >= 1) {
-        sendNotification(c)
-        clearInterval(intervals[c.i])
+        return sendNotification(c)
       }
-      return
+      return setTimeout(checkSchedule(c), c.refreshInterval)
     })
     .catch(error => {
       console.error('Error occured', error)
+      setTimeout(checkSchedule(c), c.refreshInterval)
       pusher.note(
         '',
         'Cinema loader - Error!',
@@ -67,14 +64,12 @@ const checkSchedule = c => {
 const sendNotification = c => {
   pusher.link(
     '',
-    c.text + ' - New schedule!',
+    `${c.text} - New schedule!`,
     c.cinemaLink,
     (error, response) => {
-      clearInterval(intervals[c.i])
-      delete intervals[c.i]
-      intervals.length--
       console.log('New program. Push sent.')
-      if (intervals.length <= 0) {
+      running--
+      if (running <= 0) {
         process.exit(0)
       }
     }
@@ -103,13 +98,9 @@ const sendPing = () => {
 const run = () => {
   console.log('Checking started.')
   config.map((c, i) => {
-    c.i = i
-    intervals[c.i] = setInterval(
-      () => checkSchedule(c),
-      c.refreshInterval * 1000
-    )
-    intervals.length++
-    checkSchedule(c)
+    running++
+    setTimeout(checkSchedule(c), c.refreshInterval * 1000)
+    checkSchedule(c)()
     if (c.pingInterval) {
       setInterval(sendPing, c.pingInterval * 1000)
     }
