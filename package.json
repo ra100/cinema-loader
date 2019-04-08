@@ -10,14 +10,12 @@
     "url": "https://github.com:ra100/cinema-loader.git"
   },
   "scripts": {
-    "app": "node app/index.js",
+    "start": "node app/index.js",
     "test": "exit 1"
   },
-  "devDependencies": {
-    "grunt": "~0.4.5"
-  },
+  "devDependencies": {},
   "dependencies": {
     "cheerio": "latest",
-    "pushbullet": "^1.4.3"
+    "pushbullet": "^2.4.0"
   }
 }
