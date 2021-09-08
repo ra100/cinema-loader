@@ -31,23 +31,35 @@ const download = url =>
       })
   })
 
+const hasContent = (config, data) => {
+  switch (config.type) {
+    case 'cinemaCity':
+      return data?.body?.events?.length > 0
+    case 'cineStar':
+    default:
+      const $ = cheerio.load(data)
+      return (size = $('tr.even').length) > 0
+  }
+}
+
+const createTimer = config =>
+  setTimeout(checkSchedule(config), config.refreshInterval * 1000)
+
 /**
  * Download url and check content.
  * @return null
  */
-const checkSchedule = c => () => {
-  download(c.url)
+const checkSchedule = config => () => {
+  download(config.url)
     .then(data => {
-      var $ = cheerio.load(data)
-      var size = $('tr.even').length
-      if (size >= 1) {
-        return sendNotification(c)
+      if (hasContent(config, data)) {
+        return sendNotification(config)
       }
-      return setTimeout(checkSchedule(c), c.refreshInterval)
+      return createTimer(config)
     })
     .catch(error => {
       console.error('Error occured', error)
-      setTimeout(checkSchedule(c), c.refreshInterval)
+      setTimeout(checkSchedule(config), config.refreshInterval)
       pusher.note(
         '',
         'Cinema loader - Error!',
@@ -61,11 +73,11 @@ const checkSchedule = c => () => {
  * Pushes link with info, that new schedule is available.
  * @return null
  */
-const sendNotification = c => {
+const sendNotification = config => {
   pusher.link(
     '',
-    `${c.text} - New schedule!`,
-    c.cinemaLink,
+    `${config.text} - New schedule!`,
+    config.cinemaLink,
     (error, response) => {
       console.log('New program. Push sent.')
       running--
@@ -97,12 +109,12 @@ const sendPing = () => {
  */
 const run = () => {
   console.log('Checking started.')
-  config.map((c, i) => {
+  config.map((config, index) => {
     running++
-    setTimeout(checkSchedule(c), c.refreshInterval * 1000)
-    checkSchedule(c)()
-    if (c.pingInterval) {
-      setInterval(sendPing, c.pingInterval * 1000)
+    createTimer(config)
+    checkSchedule(config)()
+    if (config.pingInterval) {
+      setInterval(sendPing, config.pingInterval * 1000)
     }
   })
 }

@@ -1,16 +1,20 @@
 //copy to config.json
-[{
-  "url": "http://cinemacity.cz/scheduleInfo?locationId=1010105&date=19/05/2016&venueTypeId=2&hideSite=0&newwin=1",
-  "pushbulletApiKey": "NONE",
-  "cinemaLink": "http://cinemacity.cz/scheduleInfo?locationId=1010105&date=19/05/2016&venueTypeId=2&hideSite=0&newwin=1",
-  "refreshInterval": 60,
-  "pingInterval": 3600,
-  "text": "CinemaCity"
-},
-{
-  "url": "http://cinestar.cz/cz/?option=com_csevents&view=eventsforday&date=2016-05-19&cinema=11&titleId=0&format=raw&tpl=program",
-  "pushbulletApiKey": "NONE",
-  "cinemaLink": "http://cinestar.cz/cz/?option=com_csevents&view=eventsforday&date=2016-05-19&cinema=11&titleId=0&format=raw&tpl=program",
-  "refreshInterval": 60,
-  "text": "CineStar"
-}]
+[
+  {
+    "url": "http://cinemacity.cz/scheduleInfo?locationId=1010105&date=19/05/2016&venueTypeId=2&hideSite=0&newwin=1",
+    "pushbulletApiKey": "NONE",
+    "cinemaLink": "http://cinemacity.cz/scheduleInfo?locationId=1010105&date=19/05/2016&venueTypeId=2&hideSite=0&newwin=1",
+    "refreshInterval": 60,
+    "pingInterval": 3600,
+    "text": "CinemaCity",
+    "type": "cinemaCity"
+  },
+  {
+    "url": "http://cinestar.cz/cz/?option=com_csevents&view=eventsforday&date=2016-05-19&cinema=11&titleId=0&format=raw&tpl=program",
+    "pushbulletApiKey": "NONE",
+    "cinemaLink": "http://cinestar.cz/cz/?option=com_csevents&view=eventsforday&date=2016-05-19&cinema=11&titleId=0&format=raw&tpl=program",
+    "refreshInterval": 60,
+    "text": "CineStar",
+    "type": "cineStar"
+  }
+]
