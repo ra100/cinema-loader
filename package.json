@@ -16,6 +16,6 @@
   "devDependencies": {},
   "dependencies": {
     "cheerio": "latest",
-    "pushbullet": "^2.4.0"
+    "pushbullet": "^3.0.0"
   }
 }
